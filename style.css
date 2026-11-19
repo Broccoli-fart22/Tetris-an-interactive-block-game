@@ -1,0 +1,1330 @@
+/* ======================================
+   TETRIS - NEON ARCADE STYLE
+   ====================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    color: white;
+
+    /* TETRIS BACKGROUND IMAGE */
+    background:
+        linear-gradient(
+            rgba(0, 0, 20, 0.38),
+            rgba(0, 0, 20, 0.38)
+        ),
+        url("Tetris.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    overflow-x: hidden;
+}
+
+
+/* ======================================
+   GENERAL
+   ====================================== */
+
+.screen {
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* ======================================
+   MAIN MENU
+   ====================================== */
+
+#menu {
+    position: relative;
+
+    width: 430px;
+
+    padding: 45px 35px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(5, 5, 30, 0.78),
+            rgba(25, 5, 50, 0.72)
+        );
+
+    border: 3px solid #5555ff;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 0 15px rgba(68, 68, 255, 0.65),
+        0 0 35px rgba(170, 0, 255, 0.35),
+        inset 0 0 30px rgba(0, 0, 0, 0.45);
+
+    backdrop-filter: blur(5px);
+}
+
+
+/* ======================================
+   RAINBOW TETRIS TITLE
+   ====================================== */
+
+#menu h1 {
+    margin-bottom: 50px;
+
+    font-size: 72px;
+
+    font-weight: 900;
+
+    letter-spacing: 7px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #00ffff,
+            #00ff00,
+            #ffff00,
+            #ff8800,
+            #ff0000,
+            #ff00ff,
+            #aa00ff,
+            #0000ff,
+            #00ffff
+        );
+
+    background-size: 300% 100%;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    animation:
+        rainbowTitle 5s linear infinite;
+
+    filter:
+        drop-shadow(
+            0 0 7px
+            rgba(255, 255, 255, 0.35)
+        )
+        drop-shadow(
+            0 0 18px
+            rgba(170, 0, 255, 0.5)
+        );
+}
+
+@keyframes rainbowTitle {
+
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 300% 50%;
+    }
+
+}
+
+
+/* ======================================
+   BUTTONS
+   ====================================== */
+
+button {
+    display: block;
+
+    width: 250px;
+
+    margin: 15px auto;
+
+    padding: 14px 18px;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #17174a,
+            #29296d
+        );
+
+    border: 2px solid #6666ff;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 0 8px
+        rgba(80, 80, 255, 0.4);
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        border-color 0.15s ease,
+        background 0.15s ease;
+}
+
+button:hover {
+
+    transform:
+        translateY(-3px)
+        scale(1.03);
+
+    border-color: #00ffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #20206b,
+            #38388d
+        );
+
+    box-shadow:
+        0 0 10px #00ffff,
+        0 0 25px
+        rgba(0, 255, 255, 0.4);
+
+}
+
+button:active {
+
+    transform:
+        translateY(1px)
+        scale(0.98);
+
+}
+
+
+/* ======================================
+   MENU BUTTON COLORS
+   ====================================== */
+
+#playButton {
+
+    border-color: #00ffff;
+
+    box-shadow:
+        0 0 10px
+        rgba(0, 255, 255, 0.35);
+
+}
+
+#controlsButton {
+
+    border-color: #aa00ff;
+
+    box-shadow:
+        0 0 10px
+        rgba(170, 0, 255, 0.35);
+
+}
+
+#backButton {
+
+    border-color: #ff8800;
+
+}
+
+
+/* ======================================
+   HOW TO PLAY
+   ====================================== */
+
+#controls {
+
+    margin-top: 30px;
+
+    padding: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(20, 20, 65, 0.95),
+            rgba(40, 15, 70, 0.95)
+        );
+
+    border: 2px solid #aa00ff;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 0 18px
+        rgba(170, 0, 255, 0.35);
+
+}
+
+#controls h2 {
+
+    margin-bottom: 18px;
+
+    color: #00ffff;
+
+    font-size: 24px;
+
+    letter-spacing: 3px;
+
+    text-shadow:
+        0 0 8px #00ffff;
+
+}
+
+#controls p {
+
+    margin: 10px;
+
+    color: #dddddd;
+
+    font-size: 15px;
+
+}
+
+
+/* ======================================
+   GAME SCREEN
+   ====================================== */
+
+#gameScreen {
+
+    position: relative;
+
+    padding: 25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(5, 5, 25, 0.92),
+            rgba(20, 10, 45, 0.92)
+        );
+
+    border: 3px solid #5555ff;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 0 15px
+        rgba(68, 68, 255, 0.55),
+
+        0 0 45px
+        rgba(170, 0, 255, 0.25),
+
+        inset 0 0 25px
+        rgba(0, 0, 0, 0.5);
+
+    backdrop-filter: blur(4px);
+}
+
+
+/* ======================================
+   GAME CONTAINER
+   ====================================== */
+
+.game-container {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 25px;
+
+}
+
+
+/* ======================================
+   SIDE PANELS
+   ====================================== */
+
+.left-panel,
+.right-panel {
+
+    width: 135px;
+
+    text-align: center;
+
+}
+
+
+/* ======================================
+   LEFT PANEL TITLE
+   ====================================== */
+
+.left-panel h2 {
+
+    margin-bottom: 25px;
+
+    font-size: 27px;
+
+    font-weight: 900;
+
+    letter-spacing: 3px;
+
+    color: #00ffff;
+
+    text-shadow:
+        0 0 7px #00ffff,
+        0 0 15px
+        rgba(0, 255, 255, 0.6);
+
+}
+
+
+/* ======================================
+   SCORE / LINES / LEVEL
+   ====================================== */
+
+.stat {
+
+    margin-bottom: 20px;
+
+    padding: 12px 5px;
+
+    background:
+        rgba(10, 10, 35, 0.9);
+
+    border-radius: 10px;
+
+    border: 2px solid #333366;
+
+    box-shadow:
+        inset 0 0 10px
+        rgba(0, 0, 0, 0.5);
+
+}
+
+.stat span {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #aaaaff;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+}
+
+.stat strong {
+
+    display: block;
+
+    font-size: 27px;
+
+    color: white;
+
+    text-shadow:
+        0 0 8px
+        rgba(255, 255, 255, 0.4);
+
+}
+
+
+/* SCORE */
+
+.stat:nth-of-type(1) strong {
+
+    color: #00ffff;
+
+    text-shadow:
+        0 0 10px #00ffff;
+
+}
+
+
+/* LINES */
+
+.stat:nth-of-type(2) strong {
+
+    color: #00ff00;
+
+    text-shadow:
+        0 0 10px #00ff00;
+
+}
+
+
+/* LEVEL */
+
+.stat:nth-of-type(3) strong {
+
+    color: #ffff00;
+
+    text-shadow:
+        0 0 10px #ffff00;
+
+}
+
+
+/* ======================================
+   SIDE BUTTONS
+   ====================================== */
+
+.left-panel button {
+
+    width: 125px;
+
+    padding: 10px 5px;
+
+    font-size: 12px;
+
+    letter-spacing: 1px;
+
+}
+
+
+/* ======================================
+   MAIN GAME BOARD
+   ====================================== */
+
+#gameCanvas {
+
+    display: block;
+
+    width: 300px;
+
+    height: 600px;
+
+    background:
+        linear-gradient(
+            rgba(5, 5, 20, 0.95),
+            rgba(5, 5, 18, 0.95)
+        );
+
+    border: 4px solid #7777ff;
+
+    border-radius: 8px;
+
+    box-shadow:
+
+        0 0 8px
+        rgba(119, 119, 255, 0.75),
+
+        0 0 25px
+        rgba(68, 68, 255, 0.45),
+
+        inset 0 0 20px
+        rgba(0, 0, 0, 0.8);
+
+}
+
+
+/* ======================================
+   NEXT / HOLD TITLES
+   ====================================== */
+
+.right-panel h3 {
+
+    margin: 10px 0;
+
+    color: #ff66ff;
+
+    font-size: 16px;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+
+    text-shadow:
+        0 0 8px #ff66ff;
+
+}
+
+
+/* ======================================
+   NEXT / HOLD CANVAS
+   ====================================== */
+
+.right-panel canvas {
+
+    display: block;
+
+    width: 120px;
+
+    height: 120px;
+
+    margin:
+        0 auto 25px;
+
+    background:
+        rgba(5, 5, 20, 0.95);
+
+    border: 2px solid #5555aa;
+
+    border-radius: 10px;
+
+    box-shadow:
+
+        0 0 12px
+        rgba(85, 85, 170, 0.4),
+
+        inset 0 0 15px
+        rgba(0, 0, 0, 0.7);
+
+}
+
+
+/* ======================================
+   PAUSE / GAME OVER OVERLAY
+   ====================================== */
+
+.overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    z-index: 10;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(35, 20, 75, 0.94),
+            rgba(0, 0, 10, 0.97)
+        );
+
+    backdrop-filter: blur(5px);
+
+}
+
+
+/* ======================================
+   PAUSED
+   ====================================== */
+
+#pauseScreen h1 {
+
+    margin-bottom: 25px;
+
+    color: #00ffff;
+
+    font-size: 65px;
+
+    font-weight: 900;
+
+    letter-spacing: 8px;
+
+    text-shadow:
+        0 0 10px #00ffff,
+        0 0 30px
+        rgba(0, 255, 255, 0.6);
+
+}
+
+
+/* ======================================
+   GAME OVER
+   ====================================== */
+
+#gameOverScreen h1 {
+
+    margin-bottom: 25px;
+
+    font-size: 62px;
+
+    font-weight: 900;
+
+    letter-spacing: 5px;
+
+    color: #ff3366;
+
+    text-shadow:
+        0 0 8px #ff3366,
+        0 0 25px
+        rgba(255, 0, 80, 0.6);
+
+}
+
+#gameOverScreen p {
+
+    margin-bottom: 20px;
+
+    color: #dddddd;
+
+    font-size: 25px;
+
+}
+
+#finalScore {
+
+    color: #ffff00;
+
+    font-weight: 900;
+
+    text-shadow:
+        0 0 10px #ffff00;
+
+}
+
+
+/* ======================================
+   RAINBOW BORDER EFFECT
+   ====================================== */
+
+#gameScreen::before,
+#menu::before {
+
+    content: "";
+
+    position: absolute;
+
+    pointer-events: none;
+
+    inset: -3px;
+
+    border-radius: inherit;
+
+    padding: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #00ffff,
+            #00ff00,
+            #ffff00,
+            #ff8800,
+            #ff0000,
+            #aa00ff,
+            #0000ff,
+            #00ffff
+        );
+
+    background-size: 300% 100%;
+
+    animation:
+        rainbowBorder 7s linear infinite;
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite: xor;
+
+    mask-composite: exclude;
+
+    opacity: 0.55;
+
+}
+
+@keyframes rainbowBorder {
+
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 300% 50%;
+    }
+
+}
+
+
+/* ======================================
+   RESPONSIVE DESIGN
+   ====================================== */
+
+@media (max-width: 900px) {
+
+    body {
+
+        align-items: flex-start;
+
+        padding: 20px 10px;
+
+    }
+
+    #gameScreen {
+
+        transform: scale(0.9);
+
+        transform-origin:
+            top center;
+
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    #menu {
+
+        width: 95vw;
+
+    }
+
+    #menu h1 {
+
+        font-size: 52px;
+
+    }
+
+    .game-container {
+
+        gap: 10px;
+
+    }
+
+    .left-panel,
+    .right-panel {
+
+        width: 100px;
+
+    }
+
+    #gameCanvas {
+
+        width: 270px;
+
+        height: 540px;
+
+    }
+
+    .left-panel button {
+
+        width: 95px;
+
+    }
+
+    .right-panel canvas {
+
+        width: 90px;
+
+        height: 90px;
+
+    }
+
+}
+
+/* =========================
+   HIGH SCORE
+========================= */
+
+.high-score-box {
+    margin: 20px auto;
+    padding: 12px 24px;
+    width: fit-content;
+
+    border: 3px solid white;
+    border-radius: 14px;
+
+    background: rgba(0, 0, 30, 0.65);
+
+    box-shadow:
+        0 0 8px #ff0000,
+        0 0 16px #00ffff,
+        0 0 24px #ff00ff,
+        inset 0 0 12px rgba(255, 255, 255, 0.25);
+
+    animation: rainbowGlow 4s linear infinite;
+}
+
+.high-score-label {
+    display: block;
+
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 4px;
+
+    background: linear-gradient(
+        90deg,
+        red,
+        orange,
+        yellow,
+        lime,
+        cyan,
+        blue,
+        violet,
+        red
+    );
+
+    background-size: 400% auto;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    animation: rainbowText 4s linear infinite;
+}
+
+.high-score-value {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 32px;
+    font-weight: bold;
+
+    color: white;
+
+    text-shadow:
+        0 0 5px white,
+        0 0 10px cyan,
+        0 0 20px #00ffff,
+        0 0 30px #ff00ff;
+
+    animation: scorePulse 1.5s ease-in-out infinite alternate;
+}
+
+
+/* Rainbow border/glow */
+@keyframes rainbowGlow {
+
+    0% {
+        box-shadow:
+            0 0 8px red,
+            0 0 18px red,
+            inset 0 0 10px rgba(255,255,255,0.2);
+    }
+
+    16% {
+        box-shadow:
+            0 0 8px orange,
+            0 0 18px orange,
+            inset 0 0 10px rgba(255,255,255,0.2);
+    }
+
+    33% {
+        box-shadow:
+            0 0 8px yellow,
+            0 0 18px yellow,
+            inset 0 0 10px rgba(255,255,255,0.2);
+    }
+
+    50% {
+        box-shadow:
+            0 0 8px lime,
+            0 0 18px lime,
+            inset 0 0 10px rgba(255,255,255,0.2);
+    }
+
+    66% {
+        box-shadow:
+            0 0 8px cyan,
+            0 0 18px cyan,
+            inset 0 0 10px rgba(255,255,255,0.2);
+    }
+
+    83% {
+        box-shadow:
+            0 0 8px violet,
+            0 0 18px violet,
+            inset 0 0 10px rgba(255,255,255,0.2);
+    }
+
+    100% {
+        box-shadow:
+            0 0 8px red,
+            0 0 18px red,
+            inset 0 0 10px rgba(255,255,255,0.2);
+    }
+}
+
+
+/* Rainbow moving text */
+@keyframes rainbowText {
+
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: 400% center;
+    }
+}
+
+
+/* Gentle high-score pulse */
+@keyframes scorePulse {
+
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.06);
+    }
+}
+
+
+/* ================================
+   MINI ARCADE
+================================ */
+
+#arcadeScreen {
+    width: min(95%, 760px);
+    margin: 25px auto;
+    padding: 24px;
+    text-align: center;
+    color: #ffffff;
+    background: #10172a;
+    border: 2px solid #3b82f6;
+    border-radius: 18px;
+    box-sizing: border-box;
+}
+
+#arcadeScreen h1 {
+    color: #93c5fd;
+    margin-top: 0;
+}
+
+#arcadeScreen h2 {
+    color: #bfdbfe;
+}
+
+#arcadeMenu {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin: 24px 0;
+}
+
+#arcadeScreen button {
+    padding: 12px 18px;
+    border: 1px solid #60a5fa;
+    border-radius: 10px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+}
+
+#arcadeScreen button:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+#arcadeScreen button:focus-visible {
+    outline: 3px solid #facc15;
+    outline-offset: 3px;
+}
+
+#arcadeCanvas {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 16px auto;
+    background: #050816;
+    border: 2px solid #64748b;
+    border-radius: 8px;
+    image-rendering: pixelated;
+}
+
+#arcadeInstructions,
+#arcadeStatus {
+    color: #cbd5e1;
+    line-height: 1.5;
+}
+
+#arcadeControls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 16px 0;
+}
+
+#arcadeHomeButton {
+    margin-top: 10px;
+    background: #334155 !important;
+    border-color: #64748b !important;
+}
+
+#arcadeHomeButton:hover {
+    background: #475569 !important;
+}
+
+@media (max-width: 480px) {
+    #arcadeMenu {
+        grid-template-columns: 1fr;
+    }
+
+    #arcadeScreen {
+        padding: 14px;
+    }
+}
+
+
+/* =========================================
+   RAINBOW TETRIS MINI ARCADE
+   These styles only affect the arcade area.
+========================================= */
+
+#arcadeScreen {
+    position: relative;
+    isolation: isolate;
+    min-height: 100vh;
+    overflow: hidden;
+    color: #ffffff;
+    background:
+        radial-gradient(ellipse at top, #252052 0%, transparent 60%),
+        linear-gradient(145deg, #080817, #11102b 55%, #080817);
+    border-top: 3px solid transparent;
+    border-image: linear-gradient(
+        90deg,
+        #ff3030,
+        #ff9f1c,
+        #fff12e,
+        #35f05a,
+        #29d9ff,
+        #6275ff,
+        #dc45ff
+    ) 1;
+}
+
+/* Rainbow heading */
+
+#arcadeScreen h1 {
+    display: inline-block;
+    max-width: 100%;
+    margin: 12px 0 18px;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(
+        90deg,
+        #ff4242,
+        #ffad33,
+        #fff34a,
+        #4cff80,
+        #39e8ff,
+        #8585ff,
+        #ff68e8
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: arcadeRainbow 5s linear infinite;
+    filter: drop-shadow(0 0 12px #8c54ff66);
+}
+
+#arcadeScreen h2 {
+    color: #73eaff;
+    text-shadow: 0 0 12px #28baff77;
+}
+
+#arcadeScreen p {
+    color: #dedfff;
+    line-height: 1.6;
+}
+
+/* Game selection layout */
+
+#arcadeMenu,
+#arcadeGameArea {
+    box-sizing: border-box;
+    padding: 24px;
+    border: 2px solid #6854ff;
+    border-radius: 20px;
+    background: linear-gradient(
+        145deg,
+        #17152deF,
+        #0c1025f5
+    );
+    box-shadow:
+        0 0 12px #7455ff66,
+        0 0 32px #3526a633,
+        inset 0 0 18px #4930ff16;
+}
+
+/* Rainbow game buttons */
+
+#arcadeScreen .arcadeGameButton {
+    position: relative;
+    isolation: isolate;
+    box-sizing: border-box;
+    min-height: 64px;
+    padding: 15px 22px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    background:
+        linear-gradient(#111027, #111027) padding-box,
+        linear-gradient(
+            110deg,
+            #ff4545,
+            #ffad35,
+            #fff044,
+            #43f37a,
+            #35dfff,
+            #7774ff,
+            #f45bff
+        ) border-box;
+    box-shadow: 0 0 12px #805cff33;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+#arcadeScreen .arcadeGameButton:hover {
+    transform: translateY(-4px) scale(1.025);
+    box-shadow:
+        0 0 12px #ffffff55,
+        0 0 26px #9d5bff77;
+    filter: brightness(1.2);
+}
+
+#arcadeScreen .arcadeGameButton:active {
+    transform: scale(0.97);
+}
+
+#arcadeScreen button:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 4px;
+}
+
+/* Give every game its own Tetris-block color */
+
+#arcadeScreen .arcadeGameButton[data-game="snake"] {
+    border-color: #36f078;
+    box-shadow: 0 0 14px #36f07833;
+}
+
+#arcadeScreen .arcadeGameButton[data-game="invaders"] {
+    border-color: #ff4f65;
+    box-shadow: 0 0 14px #ff4f6533;
+}
+
+#arcadeScreen .arcadeGameButton[data-game="breakout"] {
+    border-color: #ffb632;
+    box-shadow: 0 0 14px #ffb63233;
+}
+
+#arcadeScreen .arcadeGameButton[data-game="pong"] {
+    border-color: #37dcff;
+    box-shadow: 0 0 14px #37dcff33;
+}
+
+/* Arcade canvas */
+
+#arcadeScreen #arcadeCanvas {
+    box-sizing: border-box;
+    max-width: 100%;
+    height: auto;
+    border: 3px solid #8b69ff;
+    border-radius: 8px;
+    background: #050611;
+    box-shadow:
+        0 0 10px #8564ff99,
+        0 0 28px #4c32ff55;
+}
+
+/* Arcade status text */
+
+#arcadeScreen #arcadeStatus {
+    color: #70ffcf;
+    font-weight: bold;
+    text-shadow: 0 0 10px #38ffbb55;
+}
+
+/* Arcade navigation buttons */
+
+#arcadeScreen .arcade-navigation button,
+#arcadeScreen #arcadeHomeButton {
+    min-height: 42px;
+    padding: 11px 17px;
+    border: 1px solid #8d7aff;
+    border-radius: 9px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #35216f, #182b62);
+    box-shadow: 0 0 10px #6749ff33;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#arcadeScreen .arcade-navigation button:hover,
+#arcadeScreen #arcadeHomeButton:hover {
+    background: linear-gradient(135deg, #6741b8, #155e91);
+    box-shadow: 0 0 16px #8c6aff88;
+    transform: translateY(-2px);
+}
+
+/* Rainbow animation */
+
+@keyframes arcadeRainbow {
+    from {
+        background-position: 0% center;
+    }
+
+    to {
+        background-position: 200% center;
+    }
+}
+
+/* Mobile layout */
+
+@media (max-width: 500px) {
+    #arcadeMenu,
+    #arcadeGameArea {
+        padding: 15px;
+        border-radius: 14px;
+    }
+
+    #arcadeScreen .arcadeGameButton {
+        width: 100%;
+        min-width: 0;
+    }
+
+    #arcadeScreen .arcade-navigation button {
+        flex: 1 1 140px;
+    }
+}
+
+/* Respect reduced-motion preferences */
+
+@media (prefers-reduced-motion: reduce) {
+    #arcadeScreen h1 {
+        animation: none;
+    }
+
+    #arcadeScreen .arcadeGameButton,
+    #arcadeScreen .arcade-navigation button {
+        transition: none;
+    }
+}

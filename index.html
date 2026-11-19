@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tetris Arcade</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Extra styling for the arcade menu only -->
+    <style>
+        .hidden {
+            display: none !important;
+        }
+
+        #arcadeScreen {
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 100vh;
+            padding: 30px 16px;
+            text-align: center;
+        }
+
+        #arcadeScreen h1 {
+            margin-bottom: 10px;
+        }
+
+        #arcadeScreen p {
+            margin: 12px 0;
+        }
+
+        #arcadeMenu,
+        #arcadeGameArea {
+            width: 100%;
+            max-width: 760px;
+            margin: 20px auto;
+        }
+
+        .arcade-game-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin: 24px auto;
+        }
+
+        .arcadeGameButton {
+            min-width: 180px;
+            padding: 14px 18px;
+            cursor: pointer;
+        }
+
+        #arcadeCanvas {
+            display: block;
+            width: min(100%, 600px);
+            height: auto;
+            margin: 20px auto;
+            background: #080b16;
+            border: 2px solid #527bff;
+            image-rendering: pixelated;
+        }
+
+        #arcadeStatus {
+            min-height: 24px;
+            font-weight: bold;
+        }
+
+        .arcade-navigation {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        @media (max-width: 500px) {
+            #arcadeScreen {
+                padding: 20px 10px;
+            }
+
+            .arcadeGameButton {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         MAIN MENU
+    ========================== -->
+
+    <div id="menu" class="screen">
+
+        <h1>TETRIS</h1>
+
+        <div class="high-score-box">
+            <span class="high-score-label">HIGH SCORE</span>
+            <span class="high-score-value" id="menuHighScore">0</span>
+        </div>
+
+        <button id="playButton">PLAY</button>
+
+        <button id="controlsButton">HOW TO PLAY</button>
+
+        <!-- NEW: MORE GAMES BUTTON -->
+        <button id="moreGamesButton">MORE GAMES</button>
+
+        <div id="controls" class="hidden">
+
+            <h2>CONTROLS</h2>
+
+            <p>⬅️ ➡️ Move</p>
+            <p>⬇️ Soft Drop</p>
+            <p>⬆️ Rotate</p>
+            <p>SPACE - Hard Drop</p>
+            <p>P - Pause</p>
+            <p>C - Hold Piece</p>
+
+            <button id="backButton">BACK</button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         TETRIS GAME SCREEN
+    ========================== -->
+
+    <div id="gameScreen" class="screen hidden">
+
+        <div class="game-container">
+
+            <!-- LEFT PANEL -->
+
+            <div class="left-panel">
+
+                <h2>TETRIS</h2>
+
+                <div class="stat">
+                    <span>SCORE</span>
+                    <strong id="score">0</strong>
+                </div>
+
+                <div class="high-score-box game-high-score">
+
+                    <span class="high-score-label">
+                        HIGH SCORE
+                    </span>
+
+                    <span
+                        class="high-score-value"
+                        id="highScore"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+                <div class="stat">
+                    <span>LINES</span>
+                    <strong id="lines">0</strong>
+                </div>
+
+                <div class="stat">
+                    <span>LEVEL</span>
+                    <strong id="level">1</strong>
+                </div>
+
+                <button id="pauseButton">
+                    PAUSE
+                </button>
+
+                <button id="musicButton">
+                    MUSIC: ON
+                </button>
+
+                <button id="sfxButton">
+                    SFX: ON
+                </button>
+
+                <button id="menuButton">
+                    MENU
+                </button>
+
+            </div>
+
+
+            <!-- GAME BOARD -->
+
+            <canvas
+                id="gameCanvas"
+                width="300"
+                height="600"
+            ></canvas>
+
+
+            <!-- RIGHT PANEL -->
+
+            <div class="right-panel">
+
+                <h3>NEXT</h3>
+
+                <canvas
+                    id="nextCanvas"
+                    width="120"
+                    height="120"
+                ></canvas>
+
+                <h3>HOLD</h3>
+
+                <canvas
+                    id="holdCanvas"
+                    width="120"
+                    height="120"
+                ></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             PAUSE MENU
+        ========================== -->
+
+        <div id="pauseScreen" class="overlay hidden">
+
+            <h1>PAUSED</h1>
+
+            <button id="resumeButton">
+                RESUME
+            </button>
+
+            <button id="pauseRestartButton">
+                RESTART
+            </button>
+
+            <button id="pauseMenuButton">
+                MAIN MENU
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+             GAME OVER
+        ========================== -->
+
+        <div id="gameOverScreen" class="overlay hidden">
+
+            <h1>GAME OVER</h1>
+
+            <p>
+                Score:
+                <span id="finalScore">0</span>
+            </p>
+
+            <div class="high-score-box">
+
+                <span class="high-score-label">
+                    HIGH SCORE
+                </span>
+
+                <span
+                    class="high-score-value"
+                    id="gameOverHighScore"
+                >
+                    0
+                </span>
+
+            </div>
+
+            <button id="restartButton">
+                PLAY AGAIN
+            </button>
+
+            <button id="gameOverMenuButton">
+                MAIN MENU
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         NEW: ARCADE / MORE GAMES
+    ========================== -->
+
+    <section id="arcadeScreen" class="screen hidden">
+
+        
+        <h1>MORE GAMES</h1>
+
+        <p>Welcome to the mini arcade!</p>
+
+        <!-- GAME SELECTION MENU -->
+
+        <div id="arcadeMenu">
+
+            <h2>Choose a Game</h2>
+
+            <div class="arcade-game-list">
+
+                <button
+                    class="arcadeGameButton"
+                    data-game="snake"
+                >
+                    🐍 SNAKE
+                </button>
+
+                <button
+                    class="arcadeGameButton"
+                    data-game="invaders"
+                >
+                    👾 SPACE INVADERS
+                </button>
+
+                <button
+                    class="arcadeGameButton"
+                    data-game="breakout"
+                >
+                    🧱 BRICK BREAKER
+                </button>
+
+                <button
+                    class="arcadeGameButton"
+                    data-game="pong"
+                >
+                    🏓 PONG
+                </button>
+
+            </div>
+
+            <button id="arcadeHomeButton">
+                BACK TO TETRIS MENU
+            </button>
+
+        </div>
+
+
+        <!-- SELECTED ARCADE GAME -->
+
+        <div id="arcadeGameArea" class="hidden">
+
+            <h2 id="arcadeGameTitle">Arcade Game</h2>
+
+            <p id="arcadeInstructions">
+                Choose a game to begin.
+            </p>
+
+            <canvas
+                id="arcadeCanvas"
+                width="600"
+                height="400"
+            ></canvas>
+
+            <p id="arcadeStatus" aria-live="polite">
+                Ready to play!
+            </p>
+
+            <div class="arcade-navigation">
+
+                <button id="arcadeRestartButton">
+                    RESTART GAME
+                </button>
+
+                <button id="arcadeBackButton">
+                    ALL GAMES
+                </button>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script src="game.js"></script>
+    <script src="arcade.js"></script>
+
+</body>
+</html>
